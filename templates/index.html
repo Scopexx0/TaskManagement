@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Tasks Dashboard</h1>
+    {% for task in tasks %}
+        <h2>{{ task.title }}</h2>
+        <p>{{ task.description }}</p>
+        <!-- <p>{{ task.task_due_date }}</p> -->
+
+        <form action="{{ url_for('tasks.get_tasks', task_id=task.id, status='on') }}" method="POST">
+            <input type="checkbox" name="task_status" id="task_status" value="{{ url_for('tasks.get_tasks', task_id=task.id, status='on') }}">
+        </form>
+        
+        <p>{{ task.task_status }}</p>
+        <a href="{{ url_for('tasks.edit_task', task_id=task.id) }}"><button>Edit Task</button></a>
+    {% else %}
+        <p>No tasks available</p>
+    {% endfor %}
+    <!-- <form action="deleteGame.php" method="POST">
+        <input type="hidden" name="game" value="${game.game_name}"/>
+        <button type='submit'>Delete ${game.game_name.toUpperCase()}</button>
+    </form> -->
+    <br>
+    <a href="create_task"><button>Create Task</button></a>
+</body>
+</html>
