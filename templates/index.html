@@ -4,6 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <script>
+    async function markedCompleted(id) {
+        try {
+            const response = await fetch('/tasks', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ task_id: id }),
+            });
+            const data = await response.json();
+            console.log(id);
+            if (response.ok) {
+                alert(`Task ${data.task_id} marked as completed!`);
+                // Optionally refresh the task list or update the UI
+                var status = document.createElement('p');
+                status.innerHTML = `${String(data.status).charAt(0).toUpperCase() + String(data.status).slice(1)}`;
+                document.querySelector(`#status-btn-${data.task_id}`).remove();
+                document.querySelector(`#btn-container-${data.task_id}`).appendChild(status);
+            } else {
+                alert(data.error || 'Failed to mark task as complete');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Something went wrong!');
+        }
+    }
+    </script>
 </head>
 <body>
     <h1>Tasks Dashboard</h1>
@@ -11,21 +39,23 @@
         <h2>{{ task.title }}</h2>
         <p>{{ task.description }}</p>
         <!-- <p>{{ task.task_due_date }}</p> -->
-
-        <form action="{{ url_for('tasks.get_tasks', task_id=task.id, status='on') }}" method="POST">
-            <input type="checkbox" name="task_status" id="task_status" value="{{ url_for('tasks.get_tasks', task_id=task.id, status='on') }}">
-        </form>
-        
-        <p>{{ task.task_status }}</p>
+        {% if task.completed == False %}    
+            <span id="btn-container-{{ task.id }}">
+                <button id="status-btn-{{ task.id }}" onclick="markedCompleted('{{task.id}}')">Mark as Complete</button>
+            </span>
+        {% else %}
+            <p>{{ task.completed }}</p>
+        {% endif %}
         <a href="{{ url_for('tasks.edit_task', task_id=task.id) }}"><button>Edit Task</button></a>
     {% else %}
         <p>No tasks available</p>
     {% endfor %}
-    <!-- <form action="deleteGame.php" method="POST">
-        <input type="hidden" name="game" value="${game.game_name}"/>
-        <button type='submit'>Delete ${game.game_name.toUpperCase()}</button>
-    </form> -->
     <br>
-    <a href="create_task"><button>Create Task</button></a>
+    <p>
+        <a href="create_task"><button>Create Task</button></a>
+    </p>
+    <div id="taskList">
+
+    </div>
 </body>
 </html>
