@@ -6,7 +6,8 @@ task_routes = Blueprint('tasks', __name__)
 
 @task_routes.route('/', methods=['GET'])
 def home():
-    return jsonify({"message": "Welcome to the Task Manager API!"})
+    pass
+    # return render_template('index.html')
 
 # Get all tasks function where it fetches all the tasks from the database
 @task_routes.route('/tasks', methods=['GET', 'POST'])
