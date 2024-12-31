@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit</title>
+</head>
+<body>
+    <h1>Edit Tasks</h1>
+    {% for task in tasks %}
+        <h2>{{ task.title }}</h2>
+        <p>{{ task.description }}</p>
+        <form method="POST">
+            <label for="title">Title:</label>
+            <input type="text" name="title" id="title" value="{{ task.title }}" required>
+            <br>
+            <label for="description">Description:</label>
+            <textarea name="description" id="description">{{ task.description }}</textarea>
+            <label for="completed">Task Status</label>
+            <input name="completed" type="checkbox" {% if task.completed %} checked {% endif %} >
+            <!-- <label for="task_due_date">Task Due Date</label>
+            <input type="date" name="task_due_date" id="task_due_date">
+            <br> -->
+            <button type="submit">Edit Task</button>
+        </form>
+        <!-- <p>{{ task.task_due_date }}</p>
+        <p>{{ task.task_status }}</p> -->
+        <form action="{{ url_for('tasks.delete_task', task_id=task.id) }}" method="POST">
+            <button type='submit'>Delete {{ task.title.upper() }}</button>
+        </form>
+    {% else %}
+        <p>No tasks available</p>
+    {% endfor %}
+
+</body>
+</html>
