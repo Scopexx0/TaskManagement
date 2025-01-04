@@ -13,7 +13,7 @@ def home():
 @task_routes.route('/tasks', methods=['GET', 'POST'])
 def get_tasks():
     if request.method == 'POST':
-        task_id = request.json.get('task_id')  # Get task_id from JSON payload
+        task_id = request.json.get('task_id')
         task = Task.query.get(task_id)
         if not task:
             return jsonify({'error': 'Task not found'}), 404
@@ -56,16 +56,10 @@ def edit_task():
     return render_template('edit_task.html', tasks=tasks_list)
 
 # Delete task function where it takes the task id and deletes the task
-@task_routes.route('/delete_task', methods=['GET'])
+@task_routes.route('/delete_task', methods=['POST'])
 def delete_task():
     task_id = request.args.get('task_id')
     task = Task.query.get(task_id)
     db.session.delete(task)
     db.session.commit()
-
-# Mark task as complete function where it takes the task id and marks the task as complete
-from flask import jsonify
-
-@task_routes.route('/mark_as_complete', methods=['POST'])
-def mark_as_complete():
-    pass
+    return redirect(url_for('tasks.get_tasks'))
